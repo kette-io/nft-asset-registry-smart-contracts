@@ -1,0 +1,20 @@
+{
+  "name": "nft-asset-registry-smart-contracts",
+  "version": "1.0.0",
+  "description": "Smart contracts for KETTE asset registry",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "truffle test",
+    "flatten": "mkdir -p build && solidity_flattener --solc-paths=\"openzeppelin-solidity/=$(pwd)/node_modules/openzeppelin-solidity/\" --output build/AssetRegistryMerged.sol contracts/AssetRegistry.sol"
+  },
+  "author": "Friedhelmensch",
+  "license": "MIT",
+  "dependencies": {
+    "lodash.range": "^3.2.0",
+    "openzeppelin-solidity": "^1.12.0",
+    "truffle-hdwallet-provider": "^1.0.0-web3one.0"
+  }
+}
