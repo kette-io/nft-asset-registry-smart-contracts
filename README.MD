@@ -16,3 +16,14 @@ The smart contracts are developed using the [truffle development](https://github
         npm install
         truffle develop
         test
+
+## Architecture Overview
+
+The project comprises of four modules. Each module with its individual repository:
+
+- [fiat frontend](https://github.com/kette-io/nft-asset-registry-fiat-frontend)
+- [dApp](https://github.com/kette-io/nft-asset-registry-dapp)
+- [backend](https://github.com/kette-io/nft-asset-registry-backend)
+- smart contracts (this repository)
+
+![Architecture Overview](https://github.com/kette-io/nft-asset-registry-fiat-frontend/raw/master/readMeImages/architectureOverview.jpg)
