@@ -12,7 +12,7 @@ The smart contracts are developed using the [truffle development](https://github
 
 [Solidity flattener](https://github.com/BlockCatIO/solidity-flattener) is used to merge all imported smart contracts into one single file. This is necessary to verify the smart contract source code on [etherscan.io](http://etherscan.io/). 
 
-## Run tests
+## Run (tests)
         npm install
         truffle develop
         test
@@ -27,3 +27,8 @@ The project comprises of four modules. Each module with its individual repositor
 - smart contracts (this repository)
 
 ![Architecture Overview](https://github.com/kette-io/nft-asset-registry-fiat-frontend/raw/master/readMeImages/architectureOverview.jpg)
+
+## Todo
+- gas optimization
+- create NPM package
+- more tests
