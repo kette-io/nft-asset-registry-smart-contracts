@@ -3,7 +3,6 @@ pragma solidity ^0.4.23;
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC721/ERC721Token.sol";
 
-/*** TODO: implement withdraw function. ***/
 contract AssetRegistry is ERC721Token, Ownable {
 
     /*** EVENTS ***/

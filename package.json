@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "truffle test",
-    "flatten": "mkdir -p build && solidity_flattener --solc-paths=\"openzeppelin-solidity/=$(pwd)/node_modules/openzeppelin-solidity/\" --output build/AssetRegistryMerged.sol contracts/AssetRegistry.sol"
+    "flatten": "mkdir -p build && solidity_flattener --solc-paths=\"openzeppelin-solidity/=$(pwd)/node_modules/openzeppelin-solidity/\" --output build/AssetRegistryMerged.sol contracts/AssetRegistry.sol",
+    "trim" : "node utilities/trimContractJson"
   },
   "author": "Friedhelmensch",
   "license": "MIT",
