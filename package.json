@@ -13,7 +13,7 @@
     "ganache" : "ganache-cli -i 666 -m \"kette\"",
     "dev-deploy": "truffle migrate --reset --network development",
     "trim": "node utilities/trimContractJson",
-    "copyToBackend" : "cp ./build/AssetRegistryPublish.json ../nft-asset-registry-backend/functions/contract/AssetRegistryPublish.json"
+    "copyToBackend" : "cp ./build/AssetRegistryPublish.json ../nft-asset-registry-backend/contract/AssetRegistryPublish.json"
   },
   "author": "friedhelmensch",
   "license": "MIT",
