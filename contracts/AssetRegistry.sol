@@ -67,11 +67,12 @@ contract AssetRegistry is ERC721Token, Ownable {
     }
 
    /**
-   * @dev Returns all of the tokens that the user owns
+   * @dev Returns all of the token Ids that the user owns
+   * @param _tokenOwner The address of the owner of interest
    * @return An array of token indices
    */
-    function myTokens() external view returns (uint256[]) {
-        return ownedTokens[msg.sender];
+    function getTokenIds(address _tokenOwner) external view returns (uint256[]) {
+        return ownedTokens[_tokenOwner];
     }
     
     /// @notice Returns all the relevant information about a specific token

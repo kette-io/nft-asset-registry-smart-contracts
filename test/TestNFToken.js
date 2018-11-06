@@ -62,9 +62,8 @@ contract('AssetRegistry', function (accounts) {
 
 
     it('should return 0 when no tokens', async () => {
-      assert.equal((await contract.myTokens()).length, 0)
+      assert.equal((await contract.getTokenIds(owner)).length, 0)
     })
-
 
     it('should emit the bought event', async () => {
       var transaction = await contract.registerAsset("myHash", "mydescription", "uniqueId", { value: web3.utils.toWei("0.003") })
@@ -76,13 +75,13 @@ contract('AssetRegistry', function (accounts) {
     })
 
     it('should count tokens properly', async () => {
-      await contract.registerAsset("myHash", "mydescription", "uniqueId", { value: web3.utils.toWei("0.003") })
+      await contract.registerAsset("myHash", "mydescription", "uniqueId", { from: owner, value: web3.utils.toWei("0.003") })
 
-      const tokensAfterFirstRegistration = await contract.myTokens()
+      const tokensAfterFirstRegistration = await contract.getTokenIds(owner)
       assert.equal(tokensAfterFirstRegistration.length, 1)
 
-      await contract.registerAsset("myHash", "mydescription", "uniqueId2", { value: web3.utils.toWei("0.003") })
-      const tokensAfterSecondRegistration = await contract.myTokens()
+      await contract.registerAsset("myHash", "mydescription", "uniqueId2", { from: owner, value: web3.utils.toWei("0.003") })
+      const tokensAfterSecondRegistration = await contract.getTokenIds(owner)
       assert.equal(tokensAfterSecondRegistration.length, 2)
     })
 
