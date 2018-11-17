@@ -56,6 +56,10 @@ contract('BicycleRegistry', function (accounts) {
 
   describe('registerBicycleFor', () => {
 
+    it('should work if all fields empty', async () => {
+      await contract.registerBicycle("", "", "", "", { from: otherUser, value: web3.utils.toWei("0.003") });
+    })
+
     it('should work when called by non-owner', async () => {
       await contract.registerBicycle("vendor", "serialNumber", "frameNumber", "ipfsImageHash", { from: otherUser, value: web3.utils.toWei("0.003") });
     })
@@ -66,11 +70,6 @@ contract('BicycleRegistry', function (accounts) {
   })
 
   describe('registerBicycle', async () => {
-
-    it('should fail when the title is bigger than the max size', () => {
-      //TODO: assertRevert(contract.registerBicycle("vendor", "serialNumber", range(65).join(''), "ipfsImageHash", { from: owner, value: web3.utils.toWei("0.003") }))
-    })
-
 
     it('should fail when unique ID exists already', async () => {
       await contract.registerBicycle("vendor", "serialNumber", "frameNumber", "ipfsImageHash", { from: owner, value: web3.utils.toWei("0.003") })
