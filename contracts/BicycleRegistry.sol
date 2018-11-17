@@ -93,7 +93,9 @@ contract BicycleRegistry is MyERC721Enumerable, ERC721Metadata, Ownable {
     /// @param _vendor the vendor of the bicycle. e.g.: Hercules or Carver
     /// @param _serialNumber the serial number of the bicycle
     /// @param _frameNumber the frame number of the bicycle
-    function getBicycle(string _vendor,string _serialNumber,string _frameNumber) external view returns (int, string, uint256) {
+    function getBicycle(string _vendor,string _serialNumber,string _frameNumber) 
+    external view 
+    returns (int state_, string ipfsImageHash_, uint256 uniqueId_) {
         uint256 uniqueId = computeUniqueId(_vendor,_serialNumber,_frameNumber);
         Bicycle storage bike = bicycles[uniqueId];
         return (bike.state, bike.ipfsImageHash, uniqueId);

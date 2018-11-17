@@ -25,9 +25,8 @@ contract('BicycleRegistry', function (accounts) {
       await contract.registerBicycle(vendor, serialNumber, frameNumber, ipfsImageHash, { value: web3.utils.toWei("0.003") });
 
       const bicycle = await contract.getBicycle(vendor, serialNumber, frameNumber);
-
-      assert(bicycle[1] === ipfsImageHash, "imageHash not the same")
-      assert(bicycle[0].toNumber() === 0, "state was not as expected: " + bicycle[0])
+      assert(bicycle.ipfsImageHash_ === ipfsImageHash, "imageHash not the same")
+      assert(bicycle.state_.toNumber() === 0, "state was not as expected: " + bicycle[0])
     })
   })
 
@@ -140,7 +139,7 @@ contract('BicycleRegistry', function (accounts) {
       const uniqueId = await contract.computeUniqueId("vendor", "serialNumber", "frameNumber");
       await contract.updateState(uniqueId, 2);
       const bicycle = await contract.getBicycle("vendor", "serialNumber", "frameNumber");
-      assert(bicycle[0].toNumber() === 2, "state was not as expected: " + bicycle[0])
+      assert(bicycle.state_.toNumber() === 2, "state was not as expected: " + bicycle[0])
     })
   })
 })

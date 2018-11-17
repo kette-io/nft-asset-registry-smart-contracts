@@ -2,10 +2,10 @@
 //to be used by web3 consumers of the contract.
 var fs = require('fs');
 
-let assetRegistry;
+let registry;
 
 try{
-    assetRegistry = require("../build/contracts/AssetRegistry.json")
+    registry = require("../build/contracts/BicycleRegistry.json")
 }
 catch(e)
 {
@@ -13,10 +13,10 @@ catch(e)
     return;
 }
 
-const publishableAssetRegistry = {
-    contractName : assetRegistry.contractName,
-    abi : assetRegistry.abi,
-    networks : assetRegistry.networks
+const publishableBicycleRegistry = {
+    contractName : registry.contractName,
+    abi : registry.abi,
+    networks : registry.networks
 }
 
-fs.writeFileSync("./build/AssetRegistryPublish.json", JSON.stringify(publishableAssetRegistry, null ,4))
+fs.writeFileSync("./build/BicycleRegistryPublish.json", JSON.stringify(publishableBicycleRegistry, null ,4))
