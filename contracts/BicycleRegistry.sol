@@ -89,16 +89,23 @@ contract BicycleRegistry is MyERC721Enumerable, ERC721Metadata, Ownable {
         return uniqueId;
     }
 
-    /// @notice Returns state, imageHash and uniqueId of a bicycle
+    /// @notice Returns all bicycle information
     /// @param _vendor the vendor of the bicycle. e.g.: Hercules or Carver
     /// @param _serialNumber the serial number of the bicycle
     /// @param _frameNumber the frame number of the bicycle
-    function getBicycle(string _vendor,string _serialNumber,string _frameNumber) 
+    function lookUpBicycle(string _vendor,string _serialNumber,string _frameNumber) 
     external view 
-    returns (int state_, string ipfsImageHash_, uint256 uniqueId_) {
+    returns (string vendor_, string serialNumber_, string frameNumber_, int state_, string ipfsImageHash_, uint256 uniqueId_) {
         uint256 uniqueId = computeUniqueId(_vendor,_serialNumber,_frameNumber);
-        Bicycle storage bike = bicycles[uniqueId];
-        return (bike.state, bike.ipfsImageHash, uniqueId);
+        return getBicycle(uniqueId);
+    }
+
+    /// @notice Returns all bicycle information
+    /// @param _uniqueId the ID of the token that represents the bicycle
+    function getBicycle(uint256 _uniqueId) public view 
+    returns (string vendor_, string serialNumber_, string frameNumber_, int state_, string ipfsImageHash_, uint256 uniqueId_) {
+        Bicycle storage bike = bicycles[_uniqueId];
+        return (bike.vendor, bike.serialNumber, bike.frameNumber, bike.state, bike.ipfsImageHash, _uniqueId);
     }
 
     /// @notice Allows the owner of this contract to set the currentRegistrationPrice for each token

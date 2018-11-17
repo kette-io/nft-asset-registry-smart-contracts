@@ -24,7 +24,7 @@ contract('BicycleRegistry', function (accounts) {
 
       await contract.registerBicycle(vendor, serialNumber, frameNumber, ipfsImageHash, { value: web3.utils.toWei("0.003") });
 
-      const bicycle = await contract.getBicycle(vendor, serialNumber, frameNumber);
+      const bicycle = await contract.lookUpBicycle(vendor, serialNumber, frameNumber);
       assert(bicycle.ipfsImageHash_ === ipfsImageHash, "imageHash not the same")
       assert(bicycle.state_.toNumber() === 0, "state was not as expected: " + bicycle[0])
     })
@@ -122,7 +122,38 @@ contract('BicycleRegistry', function (accounts) {
       assert.equal('3000000000000000', price.toString())
     })
   })
+  
+  describe('lookUpBicycle', () => {
+    it('should get Bicycle with correct values', async () => {
 
+      await contract.registerBicycle("vendor", "serialNumber", "frameNumber", "ipfsImageHash", { from: owner, value: web3.utils.toWei("0.003") })
+      const bicycle = await contract.lookUpBicycle("vendor", "serialNumber", "frameNumber");
+      
+      assert(bicycle.state_.toNumber() === 0, "state was not as expected: " + bicycle.state_)
+      assert(bicycle.vendor_ === "vendor", "vendor was not as expected: " + bicycle.vendor_)
+      assert(bicycle.serialNumber_ === "serialNumber", "vendor was not as expected: " + bicycle.serialNumber_)
+      assert(bicycle.frameNumber_ === "frameNumber", "vendor was not as expected: " + bicycle.frameNumber_)
+      assert(bicycle.ipfsImageHash_ === "ipfsImageHash", "vendor was not as expected: " + bicycle.ipfsImageHash_)
+    })
+
+  })
+
+  describe('getBicycle', () => {
+    it('should get Bicycle with correct values', async () => {
+
+      await contract.registerBicycle("vendor", "serialNumber", "frameNumber", "ipfsImageHash", { from: owner, value: web3.utils.toWei("0.003") })
+      const uniqueId = await contract.computeUniqueId("vendor", "serialNumber", "frameNumber");
+      const bicycle = await contract.getBicycle(uniqueId);
+      
+      assert(bicycle.state_.toNumber() === 0, "state was not as expected: " + bicycle.state_)
+      assert(bicycle.vendor_ === "vendor", "vendor was not as expected: " + bicycle.vendor_)
+      assert(bicycle.serialNumber_ === "serialNumber", "vendor was not as expected: " + bicycle.serialNumber_)
+      assert(bicycle.frameNumber_ === "frameNumber", "vendor was not as expected: " + bicycle.frameNumber_)
+      assert(bicycle.ipfsImageHash_ === "ipfsImageHash", "vendor was not as expected: " + bicycle.ipfsImageHash_)
+      assert(bicycle.uniqueId_.toString() === uniqueId.toString(), "expected: " + uniqueId + " but was: " + bicycle.uniqueId_)
+    })
+
+  })
   describe('updateState', () => {
     it('should throw for state > 3', async () => {
       await contract.registerBicycle("vendor", "serialNumber", "frameNumber", "ipfsImageHash", { from: owner, value: web3.utils.toWei("0.003") })
@@ -138,7 +169,7 @@ contract('BicycleRegistry', function (accounts) {
       await contract.registerBicycle("vendor", "serialNumber", "frameNumber", "ipfsImageHash", { from: owner, value: web3.utils.toWei("0.003") })
       const uniqueId = await contract.computeUniqueId("vendor", "serialNumber", "frameNumber");
       await contract.updateState(uniqueId, 2);
-      const bicycle = await contract.getBicycle("vendor", "serialNumber", "frameNumber");
+      const bicycle = await contract.getBicycle(uniqueId);
       assert(bicycle.state_.toNumber() === 2, "state was not as expected: " + bicycle[0])
     })
   })
