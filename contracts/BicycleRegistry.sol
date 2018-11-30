@@ -129,10 +129,63 @@ contract BicycleRegistry is MyERC721Enumerable, ERC721Metadata, Ownable {
     /// @param uniqueId the id of the bicycle to update
     /// @param newState the new state to set (range(0,2))
     function updateState(uint256 uniqueId, uint8 newState) public {
+        _updateState(msg.sender, uniqueId, newState);
+    }
+
+    /// @notice Updates the state of a registerd bicycle.
+    /// valid states are: 0 = ok, 1 = stolen, 2 = lost
+    /// @param owner the owner of the bike updating the state
+    /// @param uniqueId the id of the bicycle to update
+    /// @param newState the new state to set (range(0,2))
+    function _updateState(address owner, uint256 uniqueId, uint8 newState) private {
         require(newState < 3, "only states 0,1,2 allowed");
-        require(ownerOf(uniqueId) == msg.sender, "not owner or token does not exist");
+        require(_exists(uniqueId), "token does not exist");
+        require(ownerOf(uniqueId) == owner, "not the owner");
         Bicycle storage bicycle = bicycles[uniqueId];
         bicycle.state = newState;
         emit BicycleStateChanged(uniqueId);
+    }
+
+    mapping (address => uint256) public replayNonce;
+    
+    /// @notice Updates the state of a registerd bicycle.
+    /// valid states are: 0 = ok, 1 = stolen, 2 = lost
+    /// @param signature signature of the bike owner
+    /// @param uniqueId the id of the bicycle to update
+    /// @param newState the new state to set (range(0,2))
+    function metaUpdateState(bytes signature, uint256 uniqueId, uint8 newState, uint256 nonce) public {
+        bytes32 metaHash = metaUpdateStateHash(uniqueId, newState, nonce);
+        address signer = getSigner(metaHash,signature);
+        require(nonce == replayNonce[signer], "nonce mismatch");
+        replayNonce[signer]++;
+        _updateState(signer, uniqueId, newState);
+    }
+
+    /// @notice Returns a hash for a function call of metaUpdateState with the given parameters
+    function metaUpdateStateHash(uint256 uniqueId, uint8 newState, uint256 nonce) public view returns(bytes32){
+        return keccak256(abi.encodePacked(address(this),"metaUpdateState", uniqueId, newState, nonce));
+    }
+
+    /// @dev will return a different address then the signers when _hash and _signature do not match
+    function getSigner(bytes32 _hash, bytes _signature) internal pure returns (address){
+        bytes32 r;
+        bytes32 s;
+        uint8 v;
+        if (_signature.length != 65) {
+            return address(0);
+        }
+        assembly {
+            r := mload(add(_signature, 32))
+            s := mload(add(_signature, 64))
+            v := byte(0, mload(add(_signature, 96)))
+        }
+        if (v < 27) {
+            v += 27;
+        }
+        if (v != 27 && v != 28) {
+            return address(0);
+        } else {
+            return ecrecover(keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", _hash)), v, r, s);
+        }
     }
 }
