@@ -10,7 +10,7 @@
     "test": "truffle test",
     "flatten": "mkdir -p build && solidity_flattener --solc-paths=\"openzeppelin-solidity/=$(pwd)/node_modules/openzeppelin-solidity/\" --output build/BicycleRegistryMerged.sol contracts/BicycleRegistry.sol",
     "dev-start": "concurrently \"npm run ganache\" \"npm run dev-deploy && npm run trim && npm run copyToBackend\"",
-    "ganache": "ganache-cli -i 666 -m \"kette\"",
+    "ganache": "ganache-cli -i 666 -m \"cluster work mimic model fish kite story rather bottom zone uncle lava\"",
     "dev-deploy": "truffle migrate --reset --network development",
     "trim": "node utilities/trimContractJson",
     "copyToBackend": "cp ./build/contracts/BicycleRegistry.json ../nft-asset-registry-backend/contract/BicycleRegistryPublish.json"
