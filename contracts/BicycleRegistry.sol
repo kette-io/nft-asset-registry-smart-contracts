@@ -1,10 +1,11 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.2;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
-import "./MyERC721Enumerable.sol";
 import "openzeppelin-solidity/contracts/token/ERC721/ERC721Metadata.sol";
+import "openzeppelin-solidity/contracts/token/ERC721/ERC721Enumerable.sol";
 
-contract BicycleRegistry is MyERC721Enumerable, ERC721Metadata, Ownable {
+
+contract BicycleRegistry is ERC721Enumerable, ERC721Metadata, Ownable {
 
     /*** EVENTS ***/
     event BicycleRegisterd(address indexed owner, uint256 tokenId);
@@ -38,12 +39,21 @@ contract BicycleRegistry is MyERC721Enumerable, ERC721Metadata, Ownable {
     /// @param _frameNumber the frame number of the bicycle
     /// @param _ipfsImageHash multihash of an image of the bicycle on the ipfs
     function registerBicycle (
-        string _vendor,
-        string _serialNumber,
-        string _frameNumber,
-        string _ipfsImageHash
+        string calldata _vendor,
+        string calldata _serialNumber,
+        string calldata _frameNumber,
+        string calldata _ipfsImageHash
   ) external payable {
         registerBicycleFor(_vendor,_serialNumber,_frameNumber,_ipfsImageHash, msg.sender);
+    }
+
+   /**
+   * @dev Returns all of the token Ids that the user owns
+   * @param _tokenOwner The address of the owner of interest
+   * @return An array of token indices
+   */
+    function getTokenIds(address _tokenOwner) public view returns (uint256[] memory) {
+        return _tokensOfOwner(_tokenOwner);
     }
 
     /// @notice registers a bicycle token with the given parameters for a specified account
@@ -56,10 +66,10 @@ contract BicycleRegistry is MyERC721Enumerable, ERC721Metadata, Ownable {
     /// @param _ipfsImageHash multihash of an image of the bicycle on the ipfs
     /// @param _for address of the account the bicycle token should be registered for
     function registerBicycleFor (
-        string _vendor,
-        string _serialNumber,
-        string _frameNumber,
-        string _ipfsImageHash,
+        string memory _vendor,
+        string memory _serialNumber,
+        string memory _frameNumber,
+        string memory _ipfsImageHash,
         address _for
   ) public payable {
         require(msg.value >= currentRegistrationPrice, "Amount of Ether sent too small");
@@ -82,7 +92,7 @@ contract BicycleRegistry is MyERC721Enumerable, ERC721Metadata, Ownable {
     /// @param _vendor the vendor of the bicycle. e.g.: Hercules or Carver
     /// @param _serialNumber the serial number of the bicycle
     /// @param _frameNumber the frame number of the bicycle
-    function computeUniqueId(string _vendor,string _serialNumber,string _frameNumber) public pure returns (uint256) {
+    function computeUniqueId(string memory _vendor,string memory _serialNumber,string memory _frameNumber) public pure returns (uint256) {
         bytes memory packed = abi.encodePacked(_vendor,_serialNumber,_frameNumber);
         bytes32 hashed = keccak256(packed);
         uint256 uniqueId = uint256(hashed);
@@ -93,9 +103,9 @@ contract BicycleRegistry is MyERC721Enumerable, ERC721Metadata, Ownable {
     /// @param _vendor the vendor of the bicycle. e.g.: Hercules or Carver
     /// @param _serialNumber the serial number of the bicycle
     /// @param _frameNumber the frame number of the bicycle
-    function lookUpBicycle(string _vendor,string _serialNumber,string _frameNumber) 
+    function lookUpBicycle(string calldata _vendor,string calldata _serialNumber,string calldata _frameNumber) 
     external view 
-    returns (string vendor_, string serialNumber_, string frameNumber_, int state_, string ipfsImageHash_, uint256 uniqueId_) {
+    returns (string memory vendor_, string memory serialNumber_, string memory frameNumber_, int state_, string memory ipfsImageHash_, uint256 uniqueId_) {
         uint256 uniqueId = computeUniqueId(_vendor,_serialNumber,_frameNumber);
         return getBicycle(uniqueId);
     }
@@ -103,7 +113,7 @@ contract BicycleRegistry is MyERC721Enumerable, ERC721Metadata, Ownable {
     /// @notice Returns all bicycle information
     /// @param _uniqueId the ID of the token that represents the bicycle
     function getBicycle(uint256 _uniqueId) public view 
-    returns (string vendor_, string serialNumber_, string frameNumber_, int state_, string ipfsImageHash_, uint256 uniqueId_) {
+    returns (string memory vendor_, string memory serialNumber_, string memory frameNumber_, int state_, string memory ipfsImageHash_, uint256 uniqueId_) {
         Bicycle storage bike = bicycles[_uniqueId];
         return (bike.vendor, bike.serialNumber, bike.frameNumber, bike.state, bike.ipfsImageHash, _uniqueId);
     }
@@ -120,10 +130,10 @@ contract BicycleRegistry is MyERC721Enumerable, ERC721Metadata, Ownable {
 
     /// @notice Let´s you withdraw all the contracts funds
     /// @param _to account the withdraw should go to
-    function withdraw(address _to) external onlyOwner {
+    function withdraw(address payable _to) external onlyOwner {
         _to.transfer(address(this).balance);
     }
-
+    
     /// @notice Updates the state of a registerd bicycle.
     /// valid states are: 0 = ok, 1 = stolen, 2 = lost
     /// @param uniqueId the id of the bicycle to update
@@ -153,7 +163,7 @@ contract BicycleRegistry is MyERC721Enumerable, ERC721Metadata, Ownable {
     /// @param signature signature of the bike owner
     /// @param uniqueId the id of the bicycle to update
     /// @param newState the new state to set (range(0,2))
-    function metaUpdateState(bytes signature, uint256 uniqueId, uint8 newState, uint256 nonce) public {
+    function metaUpdateState(bytes memory signature, uint256 uniqueId, uint8 newState, uint256 nonce) public {
         bytes32 metaHash = metaUpdateStateHash(uniqueId, newState, nonce);
         address signer = getSigner(metaHash,signature);
         require(nonce == replayNonce[signer], "nonce mismatch");
@@ -167,7 +177,7 @@ contract BicycleRegistry is MyERC721Enumerable, ERC721Metadata, Ownable {
     }
 
     /// @dev will return a different address then the signers when _hash and _signature do not match
-    function getSigner(bytes32 _hash, bytes _signature) internal pure returns (address){
+    function getSigner(bytes32 _hash, bytes memory _signature) internal pure returns (address){
         bytes32 r;
         bytes32 s;
         uint8 v;

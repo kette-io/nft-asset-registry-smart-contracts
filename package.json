@@ -13,14 +13,14 @@
     "ganache": "ganache-cli -i 666 -m \"cluster work mimic model fish kite story rather bottom zone uncle lava\"",
     "dev-deploy": "truffle migrate --reset --network development",
     "trim": "node utilities/trimContractJson",
-    "copyToBackend": "cp ./build/contracts/BicycleRegistry.json ../nft-asset-registry-backend/contract/BicycleRegistryPublish.json"
+    "copyToBackend": "cp ./build/BicycleRegistryPublish.json ../nft-asset-registry-backend/contract/BicycleRegistryPublish.json"
   },
   "author": "friedhelmensch",
   "license": "MIT",
   "dependencies": {
     "concurrently": "^4.0.1",
     "lodash.range": "^3.2.0",
-    "openzeppelin-solidity": "^2.0.0",
+    "openzeppelin-solidity": "^2.2.0",
     "truffle-hdwallet-provider": "^1.0.0-web3one.1"
   }
 }

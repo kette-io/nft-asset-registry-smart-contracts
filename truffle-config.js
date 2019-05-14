@@ -12,6 +12,12 @@ if (config.mnemonic.length > 0) {
 }
 
 module.exports = {
+  compilers: {
+    solc: {
+      version: "0.5.2",
+      docker: true
+    }
+  },
   networks: {
     live: {
       provider: function () {
